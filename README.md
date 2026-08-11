@@ -45,6 +45,32 @@ from the same source, so the markup can't drift from what's on screen.
 
 Design and behaviour live in `css/site.css` and `js/site.js`.
 
+## Palette
+
+Taken from the logo, on a near-black ground:
+
+| Token | Value | Role |
+|---|---|---|
+| `--teal-brand` | `#128c8c` | The logo teal. Fills shapes only — 4.77:1 on the background is too weak for small text. |
+| `--teal` | `#29b5af` | Same hue lifted to 7.7:1. Everything teal that touches text or a hairline. |
+| `--accent` | `#ff7a1a` | Orange. Primary buttons and the before/after slider handle. Nothing else. |
+
+Teal does the identity work — links, rules, step numbers, meta, the wordmark.
+Orange means "do this". Keeping it scarce is what stops it reading as
+decoration, so resist spending it on hover states and borders.
+
+## The work page
+
+A playlist on the left, one player on the right. Selecting a row swaps the
+player in place rather than loading a page. Rows for projects that have a
+video are real YouTube links, so the list still works with JS off; rows for
+projects without one are buttons, because there's nowhere to send you yet.
+Categories in `content/site.js` become the playlist's group headings, so
+adding a category adds a group with no template change.
+
+Homepage tiles deep link to `/work/#slug`, which selects that project on
+arrival.
+
 ## Open before launch
 
 1. **Connect the brief form.** `FORM_ENDPOINT` at the top of `js/site.js` is

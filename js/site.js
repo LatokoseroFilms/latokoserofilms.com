@@ -92,22 +92,95 @@
     });
   });
 
-  /* ------------------------------------------------- work filtering */
+  /* -------------------------------------------- work page: the player */
 
-  var filters = $$('.filter');
-  if (filters.length) {
-    var entries = $$('.entry');
+  var playlist = $('.theatre-list');
+  if (playlist) {
+    var frame = $('#player-frame');
+    var npTitle = $('#np-title');
+    var npMeta = $('#np-meta');
+    var npBlurb = $('#np-blurb');
+    var items = $$('.pl-item', playlist);
 
-    filters.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var want = btn.dataset.filter;
+    var select = function (item, autoplay) {
+      if (!item) return;
 
-        filters.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
-        entries.forEach(function (entry) {
-          entry.hidden = want !== 'all' && entry.dataset.category !== want;
-        });
+      items.forEach(function (i) {
+        if (i === item) i.setAttribute('aria-current', 'true');
+        else i.removeAttribute('aria-current');
       });
+
+      var d = item.dataset;
+
+      npTitle.innerHTML = '';
+      npTitle.appendChild(document.createTextNode(d.title));
+      if (d.titleNe) {
+        var alt = document.createElement('span');
+        alt.className = 'entry-alt';
+        alt.textContent = d.titleNe;
+        npTitle.appendChild(alt);
+      }
+
+      npMeta.textContent = d.meta || '';
+      npMeta.hidden = !d.meta;
+      npBlurb.textContent = d.blurb || '';
+      npBlurb.hidden = !d.blurb;
+
+      // Rebuilt rather than mutated: swapping an iframe's src leaves the
+      // previous video in session history, so Back would walk the playlist
+      // instead of leaving the page.
+      frame.innerHTML = '';
+      if (d.youtube) {
+        var iframe = document.createElement('iframe');
+        iframe.id = 'player';
+        iframe.src =
+          'https://www.youtube-nocookie.com/embed/' + d.youtube + (autoplay ? '?autoplay=1' : '');
+        iframe.title = d.title;
+        iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        frame.appendChild(iframe);
+      } else {
+        var empty = document.createElement('div');
+        empty.className = 'embed-empty';
+        var p = document.createElement('p');
+        p.textContent = 'This one isn’t online yet — email us and we’ll send a link.';
+        empty.appendChild(p);
+        frame.appendChild(empty);
+      }
+    };
+
+    playlist.addEventListener('click', function (e) {
+      var item = e.target.closest('.pl-item');
+      if (!item) return;
+
+      // Let modified clicks on a real YouTube link behave normally.
+      if (item.tagName === 'A' && (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0)) return;
+
+      e.preventDefault();
+      select(item, true);
+      history.replaceState(null, '', '#' + item.dataset.slug);
+
+      // On narrow screens the player sits above the list, so a tap swaps
+      // something the user can't see. Bring it back into view when it isn't.
+      var rect = frame.getBoundingClientRect();
+      var offscreen = rect.bottom < 80 || rect.top > window.innerHeight - 80;
+      if (offscreen) frame.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    // Deep links from the homepage tiles land on a specific project.
+    var fromHash = function () {
+      var slug = window.location.hash.slice(1);
+      if (!slug) return;
+
+      var item = items.filter(function (i) { return i.dataset.slug === slug; })[0];
+      if (item) {
+        select(item, false);
+        item.scrollIntoView({ block: 'nearest' });
+      }
+    };
+
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
   }
 
   /* ------------------------------------------------------ brief form */
