@@ -68,8 +68,24 @@ projects without one are buttons, because there's nowhere to send you yet.
 Categories in `content/site.js` become the playlist's group headings, so
 adding a category adds a group with no template change.
 
-Homepage tiles deep link to `/work/#slug`, which selects that project on
-arrival.
+Selecting a row opens an expanded viewer, and the page stays in that mode —
+prev/next walk the whole archive across category groups — until it's closed
+with Escape, the close button, or a click on the backdrop. While it's open the
+rest of the page is `inert` and focus is trapped; closing returns focus to
+where it came from and destroys the iframe, which is what actually stops
+playback. The inline player stays in step behind it, so closing leaves you on
+whatever you last watched.
+
+Homepage tiles deep link to `/work/#slug`. Those select the project in the
+page rather than opening the viewer — arriving straight into a modal is
+jarring.
+
+## Logo
+
+Two files, neither of which is in the repo yet — see `assets/README.md` for
+what they are and everywhere they appear. Every placement is already wired, so
+adding the files switches all of them on with no code change. Until then each
+slot falls back to text and nothing renders broken.
 
 ## Open before launch
 
