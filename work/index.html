@@ -73,7 +73,10 @@
 
 <header class="masthead">
   <div class="wrap masthead-inner">
-    <a class="wordmark" href="/">Latokosero <span>Films</span></a>
+    <a class="wordmark logo-slot" href="/" data-logo-slot>
+      <img class="logo-mark" src="/assets/logo-mark.svg" alt="Latokosero Films" data-logo width="32" height="32">
+      <span class="logo-fallback">Latokosero <span>Films</span></span>
+    </a>
     <nav aria-label="Primary">
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
         <span class="nav-toggle-bar"></span>
@@ -120,21 +123,21 @@
         <h3 class="playlist-heading" id="group-commercials">Commercials</h3>
         <ul aria-labelledby="group-commercials">
           <li><button type="button" class="pl-item" id="khalti-turns-6" data-slug="khalti-turns-6" data-title="Khalti turns 6" data-meta="Khalti · Commercials" data-blurb="Anniversary campaign film for Nepal’s digital wallet.">
-            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-thumb"><span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span></span>
             <span class="pl-text">
               <span class="pl-title">Khalti turns 6</span>
               <span class="pl-meta">Khalti</span>
             </span>
           </button></li>
           <li><button type="button" class="pl-item" id="dont-be-a-dino" data-slug="dont-be-a-dino" data-title="Don’t be a dino" data-meta="Khalti · Commercials" data-blurb="Campaign spot on paying the slow way.">
-            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-thumb"><span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span></span>
             <span class="pl-text">
               <span class="pl-title">Don’t be a dino</span>
               <span class="pl-meta">Khalti</span>
             </span>
           </button></li>
           <li><button type="button" class="pl-item" id="chaa-handwash" data-slug="chaa-handwash" data-title="Chaa handwash" data-meta="Chaa · Commercials" data-blurb="Product film for the handwash range.">
-            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-thumb"><span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span></span>
             <span class="pl-text">
               <span class="pl-title">Chaa handwash</span>
               <span class="pl-meta">Chaa</span>
@@ -153,14 +156,14 @@
         <h3 class="playlist-heading" id="group-music-videos">Music videos</h3>
         <ul aria-labelledby="group-music-videos">
           <li><button type="button" class="pl-item" id="ratri-basaima" data-slug="ratri-basaima" data-title="Ratri Basaima" data-meta="Sugam Pokharel · Music videos">
-            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-thumb"><span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span></span>
             <span class="pl-text">
               <span class="pl-title">Ratri Basaima</span>
               <span class="pl-meta">Sugam Pokharel</span>
             </span>
           </button></li>
           <li><button type="button" class="pl-item" id="lahure" data-slug="lahure" data-title="Lahure" data-meta="Chewang Lama · Music videos">
-            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-thumb"><span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span></span>
             <span class="pl-text">
               <span class="pl-title">Lahure</span>
               <span class="pl-meta">Chewang Lama</span>
@@ -187,6 +190,41 @@
   </div>
 </section>
 
+<!--
+  Expanded viewer. Selecting anything from the playlist opens this and the
+  page stays in this mode — prev/next walk the whole archive — until it's
+  closed. site.js moves it to the end of <body> on load so the rest of the
+  page can be made inert while it's open. Hidden and inert to start, so with
+  JS off it never appears and the playlist links go to YouTube instead.
+-->
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox-scrim" data-close></div>
+  <div class="lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+    <button class="lightbox-close" type="button" data-close aria-label="Close viewer">&times;</button>
+
+    <div class="lightbox-stage">
+      <div class="embed" id="lb-frame"></div>
+    </div>
+
+    <div class="lightbox-info">
+      <div class="lightbox-text">
+        <h2 id="lb-title"></h2>
+        <p class="entry-meta" id="lb-meta"></p>
+        <p id="lb-blurb"></p>
+      </div>
+      <div class="lightbox-nav">
+        <button class="btn lightbox-step" type="button" id="lb-prev">
+          <span aria-hidden="true">←</span> Previous
+        </button>
+        <p class="lightbox-count" id="lb-count" aria-live="polite"></p>
+        <button class="btn lightbox-step" type="button" id="lb-next">
+          Next <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <section class="section convert">
   <div class="wrap">
     <h2>Tell us what you’re making</h2>
@@ -198,8 +236,9 @@
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <div class="footer-brand">
-      <p class="footer-mark">Latokosero Films</p>
+    <div class="footer-brand logo-slot" data-logo-slot>
+      <img class="logo-mark" src="/assets/logo.svg" alt="Latokosero Films" data-logo width="180" height="48">
+      <p class="footer-mark logo-fallback">Latokosero Films</p>
       <p class="muted">Commercials, music videos and short films — written, shot, and finished in-house in Kathmandu.</p>
     </div>
     <nav class="footer-nav" aria-label="Footer">

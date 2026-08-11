@@ -75,7 +75,10 @@ ${schema.map(jsonld).join('\n')}
 
 <header class="masthead">
   <div class="wrap masthead-inner">
-    <a class="wordmark" href="/">Latokosero <span>Films</span></a>
+    <a class="wordmark logo-slot" href="/" data-logo-slot>
+      <img class="logo-mark" src="/assets/logo-mark.svg" alt="Latokosero Films" data-logo width="32" height="32">
+      <span class="logo-fallback">Latokosero <span>Films</span></span>
+    </a>
     <nav aria-label="Primary">
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
         <span class="nav-toggle-bar"></span>
@@ -95,8 +98,9 @@ ${body}
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <div class="footer-brand">
-      <p class="footer-mark">Latokosero Films</p>
+    <div class="footer-brand logo-slot" data-logo-slot>
+      <img class="logo-mark" src="/assets/logo.svg" alt="Latokosero Films" data-logo width="180" height="48">
+      <p class="footer-mark logo-fallback">Latokosero Films</p>
       <p class="muted">Commercials, music videos and short films — written, shot, and finished in-house in ${esc(site.city)}.</p>
     </div>
     <nav class="footer-nav" aria-label="Footer">
@@ -177,6 +181,10 @@ function homepage() {
 
   const body = `
 <section class="hero">
+  <!-- The mark's eyes are drawn as apertures. Worth seeing at size, held
+       right back so it reads as texture behind the headline, not a sticker
+       on top of it. Removed by site.js if the file isn't there. -->
+  <img class="hero-watermark" src="/assets/logo-mark.svg" alt="" aria-hidden="true" data-logo>
   <div class="wrap">
     <h1>We make the films Nepal’s brands and artists are remembered for.</h1>
     <p class="lede">Commercials, music videos and short films — written, shot, and finished in-house in Kathmandu.</p>
@@ -472,7 +480,7 @@ function workPage() {
     const isCurrent = w.slug === first.slug;
     const thumb = w.youtube
       ? `<img src="https://i.ytimg.com/vi/${w.youtube}/mqdefault.jpg" alt="" loading="lazy" width="320" height="180">`
-      : `<span class="pl-thumb-empty">Soon</span>`;
+      : `<span class="pl-thumb-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="24" height="24">Soon</span>`;
 
     const attrs = [
       `class="pl-item"`,
@@ -530,7 +538,7 @@ function workPage() {
           ${
             first.youtube
               ? `<iframe id="player" src="https://www.youtube-nocookie.com/embed/${first.youtube}" title="${esc(first.title)}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-              : `<div class="embed-empty"><p>Links on request — email us and we’ll send them over.</p></div>`
+              : `<div class="embed-empty"><img class="logo-mark" src="/assets/logo-mark.svg" alt="" data-logo width="36" height="36"><p>Links on request — email us and we’ll send them over.</p></div>`
           }
         </div>
         <div class="now-playing" aria-live="polite">
@@ -545,6 +553,41 @@ function workPage() {
     </div>
   </div>
 </section>
+
+<!--
+  Expanded viewer. Selecting anything from the playlist opens this and the
+  page stays in this mode — prev/next walk the whole archive — until it's
+  closed. site.js moves it to the end of <body> on load so the rest of the
+  page can be made inert while it's open. Hidden and inert to start, so with
+  JS off it never appears and the playlist links go to YouTube instead.
+-->
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox-scrim" data-close></div>
+  <div class="lightbox-panel" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+    <button class="lightbox-close" type="button" data-close aria-label="Close viewer">&times;</button>
+
+    <div class="lightbox-stage">
+      <div class="embed" id="lb-frame"></div>
+    </div>
+
+    <div class="lightbox-info">
+      <div class="lightbox-text">
+        <h2 id="lb-title"></h2>
+        <p class="entry-meta" id="lb-meta"></p>
+        <p id="lb-blurb"></p>
+      </div>
+      <div class="lightbox-nav">
+        <button class="btn lightbox-step" type="button" id="lb-prev">
+          <span aria-hidden="true">←</span> Previous
+        </button>
+        <p class="lightbox-count" id="lb-count" aria-live="polite"></p>
+        <button class="btn lightbox-step" type="button" id="lb-next">
+          Next <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <section class="section convert">
   <div class="wrap">

@@ -42,6 +42,41 @@
     });
   }
 
+  /* ------------------------------------------------------------ logo */
+
+  /* Every placement points at one file. If it isn't there, drop the image
+     and let the slot's text fallback take over, so the site reads correctly
+     before the asset lands and needs no edit afterwards. Checked on load as
+     well as on error, because a cached 404 never fires an error event. */
+  var wireLogo = function (img) {
+    var fail = function () {
+      var slot = img.closest('[data-logo-slot]');
+      if (slot) slot.classList.add('is-missing');
+      img.remove();
+    };
+
+    img.addEventListener('error', fail);
+    img.addEventListener('load', function () {
+      if (img.naturalWidth === 0) fail();
+    });
+    if (img.complete && img.naturalWidth === 0) fail();
+  };
+
+  $$('[data-logo]').forEach(wireLogo);
+
+  // Same treatment for marks added later, e.g. in the player's empty state.
+  var logoMark = function (height) {
+    var img = document.createElement('img');
+    img.className = 'logo-mark';
+    img.src = '/assets/logo-mark.svg';
+    img.alt = '';
+    img.setAttribute('data-logo', '');
+    img.width = height;
+    img.height = height;
+    wireLogo(img);
+    return img;
+  };
+
   /* ------------------------------------------------ tile hover loops */
 
   // Loops are preload="none" so they cost nothing until someone hovers.
@@ -102,52 +137,173 @@
     var npBlurb = $('#np-blurb');
     var items = $$('.pl-item', playlist);
 
-    var select = function (item, autoplay) {
-      if (!item) return;
+    /* Builds the player fresh rather than mutating an existing iframe's src:
+       reassigning src pushes a history entry, so Back would walk the
+       playlist instead of leaving the page. */
+    var buildPlayer = function (container, d, autoplay) {
+      container.innerHTML = '';
 
-      items.forEach(function (i) {
-        if (i === item) i.setAttribute('aria-current', 'true');
-        else i.removeAttribute('aria-current');
-      });
-
-      var d = item.dataset;
-
-      npTitle.innerHTML = '';
-      npTitle.appendChild(document.createTextNode(d.title));
-      if (d.titleNe) {
-        var alt = document.createElement('span');
-        alt.className = 'entry-alt';
-        alt.textContent = d.titleNe;
-        npTitle.appendChild(alt);
-      }
-
-      npMeta.textContent = d.meta || '';
-      npMeta.hidden = !d.meta;
-      npBlurb.textContent = d.blurb || '';
-      npBlurb.hidden = !d.blurb;
-
-      // Rebuilt rather than mutated: swapping an iframe's src leaves the
-      // previous video in session history, so Back would walk the playlist
-      // instead of leaving the page.
-      frame.innerHTML = '';
       if (d.youtube) {
         var iframe = document.createElement('iframe');
-        iframe.id = 'player';
         iframe.src =
           'https://www.youtube-nocookie.com/embed/' + d.youtube + (autoplay ? '?autoplay=1' : '');
         iframe.title = d.title;
         iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
         iframe.allowFullscreen = true;
-        frame.appendChild(iframe);
-      } else {
-        var empty = document.createElement('div');
-        empty.className = 'embed-empty';
-        var p = document.createElement('p');
-        p.textContent = 'This one isn’t online yet — email us and we’ll send a link.';
-        empty.appendChild(p);
-        frame.appendChild(empty);
+        container.appendChild(iframe);
+        return;
       }
+
+      var empty = document.createElement('div');
+      empty.className = 'embed-empty';
+      empty.appendChild(logoMark(36));
+      var p = document.createElement('p');
+      p.textContent = 'This one isn’t online yet — email us and we’ll send a link.';
+      empty.appendChild(p);
+      container.appendChild(empty);
     };
+
+    var fillText = function (titleEl, metaEl, blurbEl, d) {
+      titleEl.innerHTML = '';
+      titleEl.appendChild(document.createTextNode(d.title));
+      if (d.titleNe) {
+        var alt = document.createElement('span');
+        alt.className = 'entry-alt';
+        alt.textContent = d.titleNe;
+        titleEl.appendChild(alt);
+      }
+
+      metaEl.textContent = d.meta || '';
+      metaEl.hidden = !d.meta;
+      blurbEl.textContent = d.blurb || '';
+      blurbEl.hidden = !d.blurb;
+    };
+
+    var markCurrent = function (item) {
+      items.forEach(function (i) {
+        if (i === item) i.setAttribute('aria-current', 'true');
+        else i.removeAttribute('aria-current');
+      });
+    };
+
+    /* ------------------------------------------- inline (page) player */
+
+    var select = function (item, autoplay) {
+      if (!item) return;
+      markCurrent(item);
+      fillText(npTitle, npMeta, npBlurb, item.dataset);
+      buildPlayer(frame, item.dataset, autoplay);
+    };
+
+    /* ------------------------------------------------ expanded viewer */
+
+    var lb = $('#lightbox');
+    var lbFrame = lb && $('#lb-frame', lb);
+    var lbTitle = lb && $('#lb-title', lb);
+    var lbMeta = lb && $('#lb-meta', lb);
+    var lbBlurb = lb && $('#lb-blurb', lb);
+    var lbCount = lb && $('#lb-count', lb);
+    var lbPrev = lb && $('#lb-prev', lb);
+    var lbNext = lb && $('#lb-next', lb);
+    var lbPanel = lb && $('.lightbox-panel', lb);
+
+    var lbIndex = -1;
+    var lastFocused = null;
+    var inertTargets = [$('.masthead'), $('#main'), $('.footer')].filter(Boolean);
+
+    // Moved out of the page flow so the rest of the document can be marked
+    // inert while it's open without the dialog inheriting it.
+    if (lb) document.body.appendChild(lb);
+
+    var isOpen = function () { return lb && !lb.hidden; };
+
+    var showAt = function (index, autoplay) {
+      if (index < 0 || index >= items.length) return;
+
+      lbIndex = index;
+      var item = items[index];
+
+      markCurrent(item);
+      fillText(lbTitle, lbMeta, lbBlurb, item.dataset);
+      buildPlayer(lbFrame, item.dataset, autoplay);
+
+      // The page behind stays in step, so closing leaves you where you were.
+      fillText(npTitle, npMeta, npBlurb, item.dataset);
+      buildPlayer(frame, item.dataset, false);
+
+      lbCount.textContent = index + 1 + ' of ' + items.length;
+      lbPrev.disabled = index === 0;
+      lbNext.disabled = index === items.length - 1;
+
+      history.replaceState(null, '', '#' + item.dataset.slug);
+    };
+
+    var openViewer = function (index) {
+      if (!lb) return;
+
+      lastFocused = document.activeElement;
+      lb.hidden = false;
+      document.body.classList.add('is-locked');
+      inertTargets.forEach(function (el) { el.setAttribute('inert', ''); });
+
+      showAt(index, true);
+      lbPanel.focus();
+    };
+
+    var closeViewer = function () {
+      if (!isOpen()) return;
+
+      lb.hidden = true;
+      document.body.classList.remove('is-locked');
+      inertTargets.forEach(function (el) { el.removeAttribute('inert'); });
+
+      // Destroys the iframe, which is what actually stops playback.
+      lbFrame.innerHTML = '';
+
+      if (lastFocused && lastFocused.isConnected) lastFocused.focus();
+      else if (items[lbIndex]) items[lbIndex].focus();
+    };
+
+    var step = function (delta) {
+      var next = lbIndex + delta;
+      if (next >= 0 && next < items.length) showAt(next, true);
+    };
+
+    if (lb) {
+      lb.addEventListener('click', function (e) {
+        if (e.target.closest('[data-close]')) closeViewer();
+      });
+      lbPrev.addEventListener('click', function () { step(-1); });
+      lbNext.addEventListener('click', function () { step(1); });
+
+      document.addEventListener('keydown', function (e) {
+        if (!isOpen()) return;
+
+        if (e.key === 'Escape') { closeViewer(); return; }
+        if (e.key === 'ArrowLeft') { step(-1); return; }
+        if (e.key === 'ArrowRight') { step(1); return; }
+
+        if (e.key !== 'Tab') return;
+
+        // Keep focus inside the dialog while it owns the screen.
+        var focusable = $$('button:not([disabled]), iframe, [href]', lbPanel);
+        if (!focusable.length) return;
+
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        var active = document.activeElement;
+
+        if (e.shiftKey && (active === first || active === lbPanel)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      });
+    }
+
+    /* ---------------------------------------------------- playlist ---- */
 
     playlist.addEventListener('click', function (e) {
       var item = e.target.closest('.pl-item');
@@ -157,23 +313,22 @@
       if (item.tagName === 'A' && (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0)) return;
 
       e.preventDefault();
-      select(item, true);
-      history.replaceState(null, '', '#' + item.dataset.slug);
 
-      // On narrow screens the player sits above the list, so a tap swaps
-      // something the user can't see. Bring it back into view when it isn't.
-      var rect = frame.getBoundingClientRect();
-      var offscreen = rect.bottom < 80 || rect.top > window.innerHeight - 80;
-      if (offscreen) frame.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (lb) openViewer(items.indexOf(item));
+      else select(item, true);
     });
 
-    // Deep links from the homepage tiles land on a specific project.
+    // Deep links from the homepage tiles land on a project, but in the page
+    // rather than the viewer — arriving straight into a modal is jarring.
     var fromHash = function () {
+      if (isOpen()) return;
+
       var slug = window.location.hash.slice(1);
       if (!slug) return;
 
       var item = items.filter(function (i) { return i.dataset.slug === slug; })[0];
       if (item) {
+        lbIndex = items.indexOf(item);
         select(item, false);
         item.scrollIntoView({ block: 'nearest' });
       }
