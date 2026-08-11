@@ -97,88 +97,92 @@
 <section class="page-head">
   <div class="wrap narrow">
     <h1>Work</h1>
-    <p class="lede">Commercials, music videos and short films made in Kathmandu. Filter by what you’re looking for.</p>
+    <p class="lede">Commercials, music videos and short films made in Kathmandu. Pick anything from the list — it plays here.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="filters" role="group" aria-label="Filter work by category">
-      <button type="button" class="filter is-active" data-filter="all">All</button>
-      <button type="button" class="filter" data-filter="Commercials">Commercials</button>
-      <button type="button" class="filter" data-filter="Music videos">Music videos</button>
-    </div>
-    <div class="entries">
-      <article class="entry" id="khalti-turns-6" data-category="Commercials">
-        <div class="entry-copy">
-          <h2>Khalti turns 6</h2>
-          <p class="entry-meta">Khalti · Commercials</p>
-          <p>Anniversary campaign film for Nepal’s digital wallet.</p>
+    <div class="theatre">
+      <div class="theatre-player">
+        <div class="embed" id="player-frame">
+          <iframe id="player" src="https://www.youtube-nocookie.com/embed/WYyyyBy1xSk" title="Ko Nepali Yo" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <div class="embed embed-empty"><p class="muted">Link on request.</p></div>
-      </article>
-      <article class="entry" id="dont-be-a-dino" data-category="Commercials">
-        <div class="entry-copy">
-          <h2>Don’t be a dino</h2>
-          <p class="entry-meta">Khalti · Commercials</p>
-          <p>Campaign spot on paying the slow way.</p>
+        <div class="now-playing" aria-live="polite">
+          <h2 id="np-title">Ko Nepali Yo</h2>
+          <p class="entry-meta" id="np-meta">The Seasons Band · Music videos</p>
+          <p id="np-blurb">A patriotic song by The Seasons Band, released on Stereo Records — written, composed and performed by the band.</p>
         </div>
-        <div class="embed embed-empty"><p class="muted">Link on request.</p></div>
-      </article>
-      <article class="entry" id="chaa-handwash" data-category="Commercials">
-        <div class="entry-copy">
-          <h2>Chaa handwash</h2>
-          <p class="entry-meta">Chaa · Commercials</p>
-          <p>Product film for the handwash range.</p>
-        </div>
-        <div class="embed embed-empty"><p class="muted">Link on request.</p></div>
-      </article>
-      <article class="entry" id="ratri-basaima" data-category="Music videos">
-        <div class="entry-copy">
-          <h2>Ratri Basaima</h2>
-          <p class="entry-meta">Sugam Pokharel · Music videos</p>
-          
-        </div>
-        <div class="embed embed-empty"><p class="muted">Link on request.</p></div>
-      </article>
-      <article class="entry" id="lahure" data-category="Music videos">
-        <div class="entry-copy">
-          <h2>Lahure</h2>
-          <p class="entry-meta">Chewang Lama · Music videos</p>
-          
-        </div>
-        <div class="embed embed-empty"><p class="muted">Link on request.</p></div>
-      </article>
-      <article class="entry" id="ko-nepali-yo" data-category="Music videos">
-        <div class="entry-copy">
-          <h2>Ko Nepali Yo</h2>
-          <p class="entry-meta">The Seasons Band · Music videos</p>
-          <p>A patriotic song by The Seasons Band, released on Stereo Records — written, composed and performed by the band.</p>
-        </div>
-        <div class="embed">
-          <iframe src="https://www.youtube-nocookie.com/embed/WYyyyBy1xSk" title="Ko Nepali Yo" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </article>
-      <article class="entry" id="himalai-ramro-hiunle" data-category="Music videos">
-        <div class="entry-copy">
-          <h2>Himalai Ramro Hiunle <span class="entry-alt">हिमालै राम्रो हिउँले</span></h2>
-          <p class="entry-meta">Music videos</p>
-          
-        </div>
-        <div class="embed">
-          <iframe src="https://www.youtube-nocookie.com/embed/kxDunVWRMC4" title="Himalai Ramro Hiunle" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </article>
-      <article class="entry" id="nnp-sambridhi-paani-tank" data-category="Commercials">
-        <div class="entry-copy">
-          <h2>NNP Sambridhi Paani Tank</h2>
-          <p class="entry-meta">NNP · Commercials</p>
-          
-        </div>
-        <div class="embed">
-          <iframe src="https://www.youtube-nocookie.com/embed/sNcVo9BBv-o" title="NNP Sambridhi Paani Tank" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </article>
+      </div>
+
+      <nav class="theatre-list" aria-label="Work archive">
+      <div class="playlist-group">
+        <h3 class="playlist-heading" id="group-commercials">Commercials</h3>
+        <ul aria-labelledby="group-commercials">
+          <li><button type="button" class="pl-item" id="khalti-turns-6" data-slug="khalti-turns-6" data-title="Khalti turns 6" data-meta="Khalti · Commercials" data-blurb="Anniversary campaign film for Nepal’s digital wallet.">
+            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-text">
+              <span class="pl-title">Khalti turns 6</span>
+              <span class="pl-meta">Khalti</span>
+            </span>
+          </button></li>
+          <li><button type="button" class="pl-item" id="dont-be-a-dino" data-slug="dont-be-a-dino" data-title="Don’t be a dino" data-meta="Khalti · Commercials" data-blurb="Campaign spot on paying the slow way.">
+            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-text">
+              <span class="pl-title">Don’t be a dino</span>
+              <span class="pl-meta">Khalti</span>
+            </span>
+          </button></li>
+          <li><button type="button" class="pl-item" id="chaa-handwash" data-slug="chaa-handwash" data-title="Chaa handwash" data-meta="Chaa · Commercials" data-blurb="Product film for the handwash range.">
+            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-text">
+              <span class="pl-title">Chaa handwash</span>
+              <span class="pl-meta">Chaa</span>
+            </span>
+          </button></li>
+          <li><a class="pl-item" id="nnp-sambridhi-paani-tank" data-slug="nnp-sambridhi-paani-tank" data-youtube="sNcVo9BBv-o" data-title="NNP Sambridhi Paani Tank" data-meta="NNP · Commercials" href="https://www.youtube.com/watch?v=sNcVo9BBv-o">
+            <span class="pl-thumb"><img src="https://i.ytimg.com/vi/sNcVo9BBv-o/mqdefault.jpg" alt="" loading="lazy" width="320" height="180"></span>
+            <span class="pl-text">
+              <span class="pl-title">NNP Sambridhi Paani Tank</span>
+              <span class="pl-meta">NNP</span>
+            </span>
+          </a></li>
+        </ul>
+      </div>
+      <div class="playlist-group">
+        <h3 class="playlist-heading" id="group-music-videos">Music videos</h3>
+        <ul aria-labelledby="group-music-videos">
+          <li><button type="button" class="pl-item" id="ratri-basaima" data-slug="ratri-basaima" data-title="Ratri Basaima" data-meta="Sugam Pokharel · Music videos">
+            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-text">
+              <span class="pl-title">Ratri Basaima</span>
+              <span class="pl-meta">Sugam Pokharel</span>
+            </span>
+          </button></li>
+          <li><button type="button" class="pl-item" id="lahure" data-slug="lahure" data-title="Lahure" data-meta="Chewang Lama · Music videos">
+            <span class="pl-thumb"><span class="pl-thumb-empty">Soon</span></span>
+            <span class="pl-text">
+              <span class="pl-title">Lahure</span>
+              <span class="pl-meta">Chewang Lama</span>
+            </span>
+          </button></li>
+          <li><a class="pl-item" id="ko-nepali-yo" data-slug="ko-nepali-yo" data-youtube="WYyyyBy1xSk" data-title="Ko Nepali Yo" data-meta="The Seasons Band · Music videos" data-blurb="A patriotic song by The Seasons Band, released on Stereo Records — written, composed and performed by the band." aria-current="true" href="https://www.youtube.com/watch?v=WYyyyBy1xSk">
+            <span class="pl-thumb"><img src="https://i.ytimg.com/vi/WYyyyBy1xSk/mqdefault.jpg" alt="" loading="lazy" width="320" height="180"></span>
+            <span class="pl-text">
+              <span class="pl-title">Ko Nepali Yo</span>
+              <span class="pl-meta">The Seasons Band</span>
+            </span>
+          </a></li>
+          <li><a class="pl-item" id="himalai-ramro-hiunle" data-slug="himalai-ramro-hiunle" data-youtube="kxDunVWRMC4" data-title="Himalai Ramro Hiunle" data-title-ne="हिमालै राम्रो हिउँले" data-meta="Music videos" href="https://www.youtube.com/watch?v=kxDunVWRMC4">
+            <span class="pl-thumb"><img src="https://i.ytimg.com/vi/kxDunVWRMC4/mqdefault.jpg" alt="" loading="lazy" width="320" height="180"></span>
+            <span class="pl-text">
+              <span class="pl-title">Himalai Ramro Hiunle</span>
+              <span class="pl-meta">Music videos</span>
+            </span>
+          </a></li>
+        </ul>
+      </div>
+      </nav>
     </div>
   </div>
 </section>

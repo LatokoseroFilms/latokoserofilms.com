@@ -134,7 +134,9 @@ function tile(item) {
       ? `<img class="tile-still" src="${item.poster}" alt="" loading="lazy">`
       : `<span class="tile-fallback" aria-hidden="true">${esc(item.title)}</span>`;
 
-  const href = item.youtube ? `/work/#${item.slug}` : '/work/';
+  // Every archive entry has a row in the work playlist, so tiles can deep
+  // link by slug whether or not the video ID is filled in yet.
+  const href = `/work/#${item.slug}`;
 
   return `
       <a class="tile" href="${href}">
@@ -452,42 +454,94 @@ function workPage() {
       publisher: { '@type': 'Organization', name: site.name, url: site.domain }
     }));
 
-  const entries = work
-    .map((w) => {
-      const meta = [w.client, w.category, w.year].filter(Boolean).map(esc).join(' · ');
-      const player = w.youtube
-        ? `<div class="embed">
-          <iframe src="https://www.youtube-nocookie.com/embed/${w.youtube}" title="${esc(w.title)}" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>`
-        : `<div class="embed embed-empty"><p class="muted">Link on request.</p></div>`;
+  const meta = (w) => [w.client, w.category, w.year].filter(Boolean).map(esc).join(' · ');
 
-      return `
-      <article class="entry" id="${w.slug}" data-category="${esc(w.category)}">
-        <div class="entry-copy">
-          <h2>${esc(w.title)}${w.titleNe ? ` <span class="entry-alt">${esc(w.titleNe)}</span>` : ''}</h2>
-          ${meta ? `<p class="entry-meta">${meta}</p>` : ''}
-          ${w.blurb ? `<p>${esc(w.blurb)}</p>` : ''}
-        </div>
-        ${player}
-      </article>`;
-    })
+  // The first entry with a video is what the player holds on load. If the
+  // archive ever has none, the player renders its empty state instead.
+  const first = work.find((w) => w.youtube) || work[0];
+
+  /*
+   * Playlist rows.
+   *
+   * Entries with a video are anchors pointing at the real YouTube URL, so
+   * the list still works with JS off and the links mean something to a
+   * crawler. Entries without one have nowhere to go, so they're buttons.
+   * site.js intercepts both and swaps the player in place.
+   */
+  const row = (w) => {
+    const isCurrent = w.slug === first.slug;
+    const thumb = w.youtube
+      ? `<img src="https://i.ytimg.com/vi/${w.youtube}/mqdefault.jpg" alt="" loading="lazy" width="320" height="180">`
+      : `<span class="pl-thumb-empty">Soon</span>`;
+
+    const attrs = [
+      `class="pl-item"`,
+      `id="${w.slug}"`,
+      `data-slug="${w.slug}"`,
+      w.youtube ? `data-youtube="${w.youtube}"` : '',
+      `data-title="${esc(w.title)}"`,
+      w.titleNe ? `data-title-ne="${esc(w.titleNe)}"` : '',
+      `data-meta="${meta(w)}"`,
+      w.blurb ? `data-blurb="${esc(w.blurb)}"` : '',
+      isCurrent ? `aria-current="true"` : ''
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const inner = `
+            <span class="pl-thumb">${thumb}</span>
+            <span class="pl-text">
+              <span class="pl-title">${esc(w.title)}</span>
+              <span class="pl-meta">${[w.client, w.year].filter(Boolean).map(esc).join(' · ') || esc(w.category)}</span>
+            </span>`;
+
+    return w.youtube
+      ? `<li><a ${attrs} href="https://www.youtube.com/watch?v=${w.youtube}">${inner}
+          </a></li>`
+      : `<li><button type="button" ${attrs}>${inner}
+          </button></li>`;
+  };
+
+  const playlist = categories
+    .map(
+      (c) => `
+      <div class="playlist-group">
+        <h3 class="playlist-heading" id="group-${c.toLowerCase().replace(/\s+/g, '-')}">${esc(c)}</h3>
+        <ul aria-labelledby="group-${c.toLowerCase().replace(/\s+/g, '-')}">
+          ${work.filter((w) => w.category === c).map(row).join('\n          ')}
+        </ul>
+      </div>`
+    )
     .join('');
 
   const body = `
 <section class="page-head">
   <div class="wrap narrow">
     <h1>Work</h1>
-    <p class="lede">Commercials, music videos and short films made in Kathmandu. Filter by what you’re looking for.</p>
+    <p class="lede">Commercials, music videos and short films made in Kathmandu. Pick anything from the list — it plays here.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="filters" role="group" aria-label="Filter work by category">
-      <button type="button" class="filter is-active" data-filter="all">All</button>
-      ${categories.map((c) => `<button type="button" class="filter" data-filter="${esc(c)}">${esc(c)}</button>`).join('\n      ')}
-    </div>
-    <div class="entries">${entries}
+    <div class="theatre">
+      <div class="theatre-player">
+        <div class="embed" id="player-frame">
+          ${
+            first.youtube
+              ? `<iframe id="player" src="https://www.youtube-nocookie.com/embed/${first.youtube}" title="${esc(first.title)}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+              : `<div class="embed-empty"><p>Links on request — email us and we’ll send them over.</p></div>`
+          }
+        </div>
+        <div class="now-playing" aria-live="polite">
+          <h2 id="np-title">${esc(first.title)}${first.titleNe ? ` <span class="entry-alt">${esc(first.titleNe)}</span>` : ''}</h2>
+          <p class="entry-meta" id="np-meta">${meta(first)}</p>
+          <p id="np-blurb"${first.blurb ? '' : ' hidden'}>${first.blurb ? esc(first.blurb) : ''}</p>
+        </div>
+      </div>
+
+      <nav class="theatre-list" aria-label="Work archive">${playlist}
+      </nav>
     </div>
   </div>
 </section>
