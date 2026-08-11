@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start a brief — Latokosero Films</title>
+<meta name="description" content="Tell us what you’re making. Send a brief and hear back within two working days with a realistic budget range.">
+<link rel="canonical" href="https://latokoserofilms.com/brief/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Start a brief — Latokosero Films">
+<meta property="og:description" content="Tell us what you’re making. Send a brief and hear back within two working days with a realistic budget range.">
+<meta property="og:url" content="https://latokoserofilms.com/brief/">
+<meta property="og:image" content="https://latokoserofilms.com/cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0d0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Radley:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+</head>
+<body class="page-brief">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <a class="wordmark" href="/">Latokosero <span>Films</span></a>
+    <nav aria-label="Primary">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="sr-only">Menu</span>
+      </button>
+      <ul id="primary-nav">
+            <li><a href="/work/">Work</a></li>
+            <li><a href="/commercials/">Commercials</a></li>
+            <li><a href="/music-videos/">Music videos</a></li>
+            <li><a href="/short-films/">Short films</a></li>
+            <li><a href="/event-coverage/">Event coverage</a></li>
+            <li><a href="/ai-video/">AI video</a></li>
+        <li class="nav-cta"><a href="/brief/">Start a brief</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="page-head">
+  <div class="wrap narrow">
+    <h1>Start a brief</h1>
+    <p class="lede">Send this and you’ll hear back within two working days — with a realistic budget range, not a placeholder.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow">
+    <!--
+      When you set FORM_ENDPOINT in js/site.js, put the same URL in this
+      form's action= too. JS submits via fetch and swaps in the confirmation
+      below; the action is what makes the form still work with JS disabled,
+      posting normally and landing on /thanks/ via the _next field.
+    -->
+    <form class="brief" id="brief-form" method="post" action="" novalidate>
+      <input type="hidden" name="_next" value="https://latokoserofilms.com/thanks/">
+
+      <div class="field">
+        <label for="name">Name <span class="req">required</span></label>
+        <input type="text" id="name" name="name" autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <label for="organisation">Organisation</label>
+        <input type="text" id="organisation" name="organisation" autocomplete="organization">
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="req">required</span></label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone / WhatsApp</label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label for="project_type">Project type</label>
+        <select id="project_type" name="project_type">
+          <option value="">Choose one</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Music video">Music video</option>
+          <option value="Short film">Short film</option>
+          <option value="Event">Event</option>
+          <option value="AI video">AI video</option>
+          <option value="Not sure">Not sure</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="budget">Budget band <span class="req">required</span></label>
+        <select id="budget" name="budget" required>
+          <option value="">Choose one</option>
+          <option value="Under NPR 3 lakh">Under NPR 3 lakh</option>
+          <option value="NPR 3–10 lakh">NPR 3–10 lakh</option>
+          <option value="NPR 10–25 lakh">NPR 10–25 lakh</option>
+          <option value="NPR 25 lakh+">NPR 25 lakh+</option>
+          <option value="Not sure yet">Not sure yet</option>
+        </select>
+        <p class="hint">A band is enough. It tells us what’s achievable before we waste your time.</p>
+      </div>
+
+      <div class="field">
+        <label for="timeline">Timeline</label>
+        <select id="timeline" name="timeline">
+          <option value="">Choose one</option>
+          <option value="Under 2 weeks">Under 2 weeks</option>
+          <option value="2–4 weeks">2–4 weeks</option>
+          <option value="1–3 months">1–3 months</option>
+          <option value="Flexible">Flexible</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="references">Reference links</label>
+        <textarea id="references" name="references" rows="3" placeholder="Anything you’ve seen that’s close to what you want"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="message">Tell us about it <span class="req">required</span></label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+      </div>
+
+      <!-- Honeypot: real people leave this empty. -->
+      <div class="field hp" aria-hidden="true">
+        <label for="company_website">Company website</label>
+        <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+
+      <button class="btn btn-primary" type="submit">Send the brief</button>
+      <p class="hint">Or email <a href="mailto:hello@latokoserofilms.com">hello@latokoserofilms.com</a>.</p>
+    </form>
+
+    <div class="confirmation" id="brief-confirmation" hidden tabindex="-1">
+      <h2>Got it.</h2>
+      <p class="lede">We’ll come back to you within two working days with a budget range and some questions.</p>
+      <p><a class="arrow-link" href="/work/">See the work while you wait</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <p class="footer-mark">Latokosero Films</p>
+      <p class="muted">Commercials, music videos and short films — written, shot, and finished in-house in Kathmandu.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <h2>Services</h2>
+      <ul>
+        <li><a href="/commercials/">Commercials</a></li>
+        <li><a href="/music-videos/">Music videos</a></li>
+        <li><a href="/short-films/">Short films</a></li>
+        <li><a href="/event-coverage/">Event coverage</a></li>
+        <li><a href="/ai-video/">AI video</a></li>
+      </ul>
+    </nav>
+    <nav class="footer-nav" aria-label="More">
+      <h2>Studio</h2>
+      <ul>
+        <li><a href="/work/">Work</a></li>
+        <li><a href="/brief/">Start a brief</a></li>
+        <li><a href="mailto:hello@latokoserofilms.com">hello@latokoserofilms.com</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap footer-legal">
+    <p class="muted">© 2026 Latokosero Films. Kathmandu, Nepal.</p>
+  </div>
+</footer>
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>
